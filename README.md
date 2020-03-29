@@ -1,6 +1,6 @@
 # PyMonkey
 
-This is Writing An Interpreter In Go (https://interpreterbook.com/) implemented in Python3. is implemented in python. I'm using "b1u3" as prefix for embedded module and function name collision.
+This is Writing An Interpreter In Go (https://interpreterbook.com/) implemented in Python3. I'm using "b1u3" as prefix for embedded module and function name collision.
 
 Thank you, Thorsten. It was good experience.
 
