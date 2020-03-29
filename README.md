@@ -4,6 +4,8 @@ This is Writing An Interpreter In Go (https://interpreterbook.com/) implemented 
 
 Thank you, Thorsten. It was good experience.
 
+It doesn't implement macro system yet. I will later.
+
 ============================
 
 Go言語でつくるインタプリタ(オライリージャパン)の python による実装です。python の組み込み関数、モジュールとの名前衝突のため、プリフィックスとして、b1u3 が付いています。
