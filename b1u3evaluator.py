@@ -52,6 +52,8 @@ def b1u3eval(node:b1u3ast.Node, env:Dict[str, b1u3object.Object]) -> b1u3object.
         body = node.body
         return b1u3object.Function(parameters=params, env=env, body=body)
     elif isinstance(node, b1u3ast.CallExpression):
+        if node.function.token_literal() == "quote":
+            return quote(node.arguments[0])
         function = b1u3eval(node.function, env)
         if is_error(function):
             return function
@@ -348,4 +350,7 @@ def eval_hash_literal(node, env):
         hashed = key.hash_key()
         pairs[hashed] = b1u3object.HashPair(key=key, value=value)
     return b1u3object.Hash(pairs=pairs)
+
+def quote(node):
+    return b1u3object.Quote(node=node)
 

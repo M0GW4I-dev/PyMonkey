@@ -9,6 +9,7 @@ STRING_OBJ = 'STRING'
 BUILTIN_OBJ = 'BUILTIN'
 ARRAY_OBJ = 'ARRAY'
 HASH_OBJ = 'HASH'
+QUOTE_OBJ = 'QUOTE'
 
 # Object Interface
 class Object:
@@ -199,5 +200,14 @@ class Hash(Object):
         for p in self.pairs:
             strs.append(f'{p.key.inspect()}: {p.value.inspect()}')
         return '{'+f'{", ".join(strs)}'+'}'
+
+class Quote(Object):
+    node=None
+
+    def type(self):
+        return QUOTE_OBJ
+
+    def inspect(self):
+        return f"QUOTE({repr(self.node)})"
 
 
