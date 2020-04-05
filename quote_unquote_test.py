@@ -32,6 +32,8 @@ class QuoteTest(unittest.TestCase):
             ["quote(unquote(3 + 4) + 8)", "(7 + 8)"],
             ["quote(unquote(true))", "true"],
             ["quote(unquote(true == false))", "false"],
+            ["quote(unquote(quote(4 + 5)))", "(4 + 5)"],
+            ["let hoge = quote(4 + 4); quote(unquote(4 + 4) + unquote(hoge))", "(8 + (4 + 4))"]
         ]
         for tt in tests:
             evaluated = self.help_test_eval(tt[0])
