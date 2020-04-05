@@ -1,4 +1,4 @@
-import b1u3ast, b1u3object
+import b1u3ast, b1u3object, b1u3token
 from typing import List, Dict
 
 TRUE = b1u3object.Boolean(value=True)
@@ -53,7 +53,7 @@ def b1u3eval(node:b1u3ast.Node, env:Dict[str, b1u3object.Object]) -> b1u3object.
         return b1u3object.Function(parameters=params, env=env, body=body)
     elif isinstance(node, b1u3ast.CallExpression):
         if node.function.token_literal() == "quote":
-            return quote(node.arguments[0])
+            return quote(node.arguments[0], env)
         function = b1u3eval(node.function, env)
         if is_error(function):
             return function
@@ -351,6 +351,42 @@ def eval_hash_literal(node, env):
         pairs[hashed] = b1u3object.HashPair(key=key, value=value)
     return b1u3object.Hash(pairs=pairs)
 
-def quote(node):
+def quote(node, env):
+    # この中で quote 内の unquote を処理する
+    node = eval_unquote_calls(node, env)
     return b1u3object.Quote(node=node)
+
+def extend_unquote(node, env):
+    if not is_unquote_call(node):
+        return node
+    if not isinstance(node, b1u3ast.CallExpression):
+        return node
+    if len(node.argunments) != 1:
+        return node
+    unquoted = b1u3eval(node.arguments[0], env)
+    return convert_object_to_ast(unquoted)
+
+def convert_object_to_ast(obj):
+    if isinstance(obj, b1u3object.Integer):
+        t = b1u3token.Token(type=b1u3token.INT, literal=f'{obj.value}')
+        return b1u3ast.IntegerLiteral(token=t, value=obj.value)
+    return None
+
+def eval_unquote_calls(quoted, env):
+    def extend_unquote(node):
+        if not is_unquote_call(node):
+            return node
+        if not isinstance(node, b1u3ast.CallExpression):
+            return node
+        if len(node.arguments) != 1:
+            return node
+        unquoted = b1u3eval(node.arguments[0], env)
+        return convert_object_to_ast(unquoted)
+    return b1u3ast.modify(quoted, extend_unquote)
+
+
+def is_unquote_call(node):
+    if not isinstance(node, b1u3ast.CallExpression):
+        return False
+    return node.function.token_literal() == "unquote"
 

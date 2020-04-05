@@ -292,3 +292,46 @@ class HashLiteral(Expression):
         return "{"+f"{', '.join(pairs)}"+"}"
 
 
+def modify(node, modifier):
+    """ 再帰的にたどって、自身を更新していく """
+    if isinstance(node, Program):
+        for i, s in enumerate(node.statements):
+            node.statements[i] = modify(s, modifier)
+    elif isinstance(node, ExpressionStatement):
+        node.expression = modify(node.expression, modifier)
+    elif isinstance(node, InfixExpression):
+        node.right = modify(node.right, modifier)
+        node.left = modify(node.left, modifier)
+    elif isinstance(node, PrefixExpression):
+        node.right = modify(node.right, modifier)
+    elif isinstance(node, IndexExpression):
+        node.left = modify(node.left, modifier)
+        node.index = modify(node.index, modifier)
+    elif isinstance(node, IfExpression):
+        node.condition = modify(node.condition, modifier)
+        node.consequence = modify(node.consequence, modifier)
+        if node.alternative is not None:
+            node.alternative = modify(node.alternative, modifier)
+    elif isinstance(node, BlockStatement):
+        for i, s in enumerate(node.statements):
+            node.statements[i] = modify(node.statements[i], modifier)
+    elif isinstance(node, ReturnStatement):
+        node.return_value = modify(node.return_value, modifier)
+    elif isinstance(node, LetStatement):
+        node.value = modify(node.value, modifier)
+    elif isinstance(node, FunctionLiteral):
+        for i, p in enumerate(node.parameters):
+            node.parameters[i] = modify(node.parameters[i], modifier)
+        node.body = modify(node.body, modifier)
+    elif isinstance(node, ArrayLiteral):
+        for i, e in enumerate(node.elements):
+            node.elements[i] = modify(node.elements[i], modifier)
+    elif isinstance(node, HashLiteral):
+        new_pairs = {}
+        for k, v in node.pairs.items():
+            new_k = modify(k, modifier)
+            new_v = modify(k, modifier)
+            new_pairs[new_k] = new_v
+        node.pairs = new_pairs
+    return modifier(node)
+

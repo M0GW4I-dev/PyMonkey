@@ -6,7 +6,7 @@ class QuoteTest(unittest.TestCase):
     def test_quote(self):
         tests = [
             ["quote(5)", "5"],
-            ["quote(4 + 3)", "(4 + 3)"],
+            ["quote(8 + 3)", "(8 + 3)"],
             ["quote(foobar)", "foobar"],
             ["quote(foobar + hogehoge)", "(foobar + hogehoge)"]
         ]
@@ -28,12 +28,12 @@ class QuoteTest(unittest.TestCase):
         tests = [
             ["quote(unquote(4))", "4"],
             ["quote(unquote(4 + 4))", "8"],
-            ["quote(8 + unqute(4 + 4))", "(8 + 8)"],
-            ["quote(unquote(4 + 4) + 8)", "(8 + 8)"]
+            ["quote(8 + unquote(3 + 4))", "(8 + 7)"],
+            ["quote(unquote(3 + 4) + 8)", "(7 + 8)"]
         ]
         for tt in tests:
             evaluated = self.help_test_eval(tt[0])
             self.assertTrue(isinstance(evaluated, b1u3object.Quote))
-            self.assertNotNone(evaluated)
-            self.assertEqual(repr(evaluated), tt[1])
+            self.assertTrue(evaluated is not None)
+            self.assertEqual(repr(evaluated.node), tt[1])
 
