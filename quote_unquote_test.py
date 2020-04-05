@@ -29,7 +29,9 @@ class QuoteTest(unittest.TestCase):
             ["quote(unquote(4))", "4"],
             ["quote(unquote(4 + 4))", "8"],
             ["quote(8 + unquote(3 + 4))", "(8 + 7)"],
-            ["quote(unquote(3 + 4) + 8)", "(7 + 8)"]
+            ["quote(unquote(3 + 4) + 8)", "(7 + 8)"],
+            ["quote(unquote(true))", "true"],
+            ["quote(unquote(true == false))", "false"],
         ]
         for tt in tests:
             evaluated = self.help_test_eval(tt[0])

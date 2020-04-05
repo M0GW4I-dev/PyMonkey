@@ -370,6 +370,9 @@ def convert_object_to_ast(obj):
     if isinstance(obj, b1u3object.Integer):
         t = b1u3token.Token(type=b1u3token.INT, literal=f'{obj.value}')
         return b1u3ast.IntegerLiteral(token=t, value=obj.value)
+    elif isinstance(obj, b1u3object.Boolean):
+        t = b1u3token.Token(type=b1u3token.TRUE if obj.value else b1u3token.FALSE, literal='true' if obj.value else 'false')
+        return b1u3ast.Boolean(token=t, value=obj.value)
     return None
 
 def eval_unquote_calls(quoted, env):
