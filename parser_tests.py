@@ -437,9 +437,10 @@ class ParserTest(unittest.TestCase):
         exp = program.statements[0].expression
         self.assertTrue(isinstance(exp, b1u3ast.MacroLiteral))
         self.assertEqual(len(exp.parameters), 2, 'length of exp.parameters is not 2')
-        self.help_test_literal_expression(exp.arguments[0], 'x')
-        self.help_test_literal_expression(exp.arguments[0], 'y')
-        self.assertEqual(len(macro.body.statements), 1)
+        self.help_test_literal_expression(exp.parameters[0], 'x')
+        self.help_test_literal_expression(exp.parameters[1], 'y')
+        self.assertEqual(len(exp.body.statements), 1)
         body_stmt = exp.body.statements[0]
         self.assertTrue(isinstance(body_stmt, b1u3ast.ExpressionStatement))
-        self.help_test_infix_expression(body_stmt.expression, 'x' + 'y')
+        self.help_test_infix_expression(body_stmt.expression, 'x', '+', 'y')
+

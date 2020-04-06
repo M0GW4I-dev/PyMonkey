@@ -335,3 +335,27 @@ def modify(node, modifier):
         node.pairs = new_pairs
     return modifier(node)
 
+
+class MacroLiteral(Expression):
+    token=None
+    parameters=[]
+    body=[]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.parameters=[]
+        self.body=[]
+
+    def expression_node(self):
+        pass
+
+    def token_literal(self):
+        return self.token.literal
+
+    def __repr__(self):
+        s = []
+        for p in self.parameters:
+            s.append(repr(p))
+        return f'{self.token_literal()}({", ".join(s)}){repr(self.body)}'
+
+        

@@ -53,6 +53,7 @@ class Parser():
         self.register_prefix(b1u3token.STRING, self.parse_string_literal)
         self.register_prefix(b1u3token.LBRACKET, self.parse_array_literal)
         self.register_prefix(b1u3token.LBRACE, self.parse_hash_literal)
+        self.register_prefix(b1u3token.MACRO, self.parse_macro_literal)
         self.infix_parse_fns = defaultdict(lambda: None)
         self.register_infix(b1u3token.PLUS, self.parse_infix_expression)
         self.register_infix(b1u3token.MINUS, self.parse_infix_expression)
@@ -351,4 +352,13 @@ class Parser():
             return None
         return h
 
+    def parse_macro_literal(self):
+        lit = b1u3ast.MacroLiteral(token=self.cur_token)
+        if not self.expect_peek(b1u3token.LPAREN):
+            return None
+        lit.parameters = self.parse_function_parameters()
+        if not self.expect_peek(b1u3token.LBRACE):
+            return None
+        lit.body = self.parse_block_statement()
+        return lit
 
