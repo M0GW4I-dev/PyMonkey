@@ -42,7 +42,8 @@ keywords = defaultdict(lambda: None, {
         'false': FALSE,
         'return': RETURN,
         'if': IF,
-        'else': ELSE
+        'else': ELSE,
+        'macro': MACRO
 })
 
 
