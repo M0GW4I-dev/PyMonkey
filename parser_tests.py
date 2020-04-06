@@ -426,3 +426,20 @@ class ParserTest(unittest.TestCase):
         }
         for k in hashobj.pairs:
             tests[repr(k)](hashobj.pairs[k])
+
+    def test_macro_literal_parsing(self):
+        input = 'macro(x, y) { x + y; }'
+        l = b1u3token.Lexer(input)
+        p = b1u3parser.Parser(l)
+        program = p.parse_program()
+        self.check_parser_errors(p)
+        self.assertEqual(len(program.statements), 1)
+        exp = program.statements[0].expression
+        self.assertTrue(isinstance(exp, b1u3ast.MacroLiteral))
+        self.assertEqual(len(exp.parameters), 2, 'length of exp.parameters is not 2')
+        self.help_test_literal_expression(exp.arguments[0], 'x')
+        self.help_test_literal_expression(exp.arguments[0], 'y')
+        self.assertEqual(len(macro.body.statements), 1)
+        body_stmt = exp.body.statements[0]
+        self.assertTrue(isinstance(body_stmt, b1u3ast.ExpressionStatement))
+        self.help_test_infix_expression(body_stmt.expression, 'x' + 'y')
