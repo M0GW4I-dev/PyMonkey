@@ -116,7 +116,7 @@ class LexerTest(unittest.TestCase):
             self.assertEqual(t[1], token.literal, f'tests[{i}]: literal wrong expected "{t[1]}", got "{token.literal}"')
 
     def test_next_token5(self):
-        input = '10 == 5; 3 != 8; [1, 2];'
+        input = '10 == 5; 3 != 8; [1, 2]; macro(x, y) { x + y };'
         tests = [
             (b1u3token.INT, '10'),
             (b1u3token.EQ, '=='),
@@ -131,6 +131,17 @@ class LexerTest(unittest.TestCase):
             (b1u3token.COMMA, ','),
             (b1u3token.INT, '2'),
             (b1u3token.RBRACKET, ']'),
+            (b1u3token.SEMICOLON, ';'),
+            (b1u3token.MACRO, 'macro'),
+            (b1u3token.LPAREN, ')'),
+            (b1u3token.IDENT, 'x'),
+            (b1u3token.COMMA, ','),
+            (b1u3token.IDENT, 'y'),
+            (b1u3token.LBRACE, '{'),
+            (b1u3token.IDENT, 'x'),
+            (b1u3token.PLUS, '+'),
+            (b1u3token.IDENT, 'y'),
+            (b1u3token.RBRACE, '}'),
             (b1u3token.SEMICOLON, ';'),
             (b1u3token.EOF, '')
         ]

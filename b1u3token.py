@@ -32,6 +32,7 @@ EQ = "=="
 NOT_EQ = "!="
 STRING = "STRING"
 COLON = ":"
+MACRO = "MACRO"
 
 """ str to token type """
 keywords = defaultdict(lambda: None, {
