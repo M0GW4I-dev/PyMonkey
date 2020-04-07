@@ -270,14 +270,14 @@ class EvaluatorTest(unittest.TestCase):
         program = p.parse_program()
         b1u3evaluator.define_macros(program, env)
 
-        self.assertEqual(len(program.statements), 3, f'len(program.statements) is not 3, got={len(program.statements)}')
-        env["number"]
-        env["function"]
+        self.assertEqual(len(program.statements), 2, f'len(program.statements) is not 3, got={len(program.statements)}')
+        # env["number"]
+        # env["function"]
         obj = env["mymacro"]
         self.assertTrue(isinstance(obj, b1u3object.Macro))
         self.assertEqual(len(obj.parameters), 2)
         self.assertEqual(repr(obj.parameters[0]), 'x')
         self.assertEqual(repr(obj.parameters[1]), 'y')
-        self.assertEqual(repr(obj.body), '(x + y)')
+        self.assertEqual(repr(obj.body), '{ (x + y) }')
 
 

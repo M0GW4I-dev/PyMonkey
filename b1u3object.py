@@ -10,6 +10,7 @@ BUILTIN_OBJ = 'BUILTIN'
 ARRAY_OBJ = 'ARRAY'
 HASH_OBJ = 'HASH'
 QUOTE_OBJ = 'QUOTE'
+MACRO_OBJ = 'MACRO'
 
 # Object Interface
 class Object:
@@ -210,4 +211,17 @@ class Quote(Object):
     def inspect(self):
         return f"QUOTE({repr(self.node)})"
 
+
+class Macro(Object):
+    parameters=[]
+    body=None
+    env=None
+    def type(self):
+        return MACRO_OBJ
+
+    def inspect(self):
+        params = []
+        for p in self.parameters:
+            params.append(repr(p))
+        return f'macro({", ".join(params)})'+'{\n'+f'{repr(self.body)}'+'\n}'
 

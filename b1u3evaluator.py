@@ -395,3 +395,30 @@ def is_unquote_call(node):
         return False
     return node.function.token_literal() == "unquote"
 
+def define_macros(program, env):
+    definitions = []
+    for i, statement in enumerate(program.statements):
+        if is_macro_definition(statement):
+            add_macro(statement, env)
+            definitions.append(i)
+    for i in range(len(definitions)-1, -1, -1):
+        definition_index = definitions[i]
+        program.statements = program.statements[:definition_index]+program.statements[definition_index+1:]
+    
+
+def is_macro_definition(node):
+    if not isinstance(node, b1u3ast.LetStatement):
+        return False
+    if not isinstance(node.value, b1u3ast.MacroLiteral):
+        return False
+    return True
+
+
+def add_macro(stmt, env):
+    macro_literal = stmt.value
+    macro = b1u3object.Macro(parameters=macro_literal.parameters, env=env, body=macro_literal.body)
+    env[stmt.name.value] = macro
+    
+
+
+
