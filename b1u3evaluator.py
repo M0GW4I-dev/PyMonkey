@@ -6,6 +6,7 @@ FALSE = b1u3object.Boolean(value=False)
 NULL = b1u3object.Null()
 
 def b1u3eval(node:b1u3ast.Node, env:Dict[str, b1u3object.Object]) -> b1u3object.Object:
+    print(node)
     if isinstance(node, b1u3ast.Program):
         return eval_program(node.statements, env)
     elif isinstance(node, b1u3ast.ExpressionStatement):
@@ -147,7 +148,6 @@ def eval_bang_operator_expression(right, env):
 
 def eval_program(stmts:List[b1u3ast.Statement], env) -> b1u3object.Object:
     res = b1u3object.Object()
-
     for statement in stmts:
         res = b1u3eval(statement, env)
         if isinstance(res, b1u3object.ReturnValue):
