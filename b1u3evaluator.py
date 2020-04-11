@@ -419,6 +419,63 @@ def add_macro(stmt, env):
     macro = b1u3object.Macro(parameters=macro_literal.parameters, env=env, body=macro_literal.body)
     env[stmt.name.value] = macro
     
+def expand(node):
+    if not isinstance(node, b1u3ast.CallExpression):
+        return node
+    macro, ok = is_macro_call(node, env)
+    if not ok:
+        return node
+    args = quote_args(node)
+    eval_env = extend_macro_env(macro, args)
+    evaluated = b1u3eval(macro.body, eval_env)
+    if not isinstance(evaluated, b1u3object.Quote):
+        import sys
+        print('we only support returning AST-nodes from macros', file=sys.stderr)
+    return evaluated.node
 
 
+def expand_macros(program, env):
+    def expand(node):
+        if not isinstance(node, b1u3ast.CallExpression):
+            return node
+        macro, ok = is_macro_call(node, env)
+        if not ok:
+            return node
+        args = quote_args(node)
+        eval_env = extend_macro_env(macro, args)
+        evaluated = b1u3eval(macro.body, eval_env)
+        if not isinstance(evaluated, b1u3object.Quote):
+            import sys
+            print('we only support returning AST-nodes from macros', file=sys.stderr)
+            sys.exit()
+        return evaluated.node
+    return b1u3ast.modify(program, expand)
+
+
+def is_macro_call(exp, env):
+    identifier = exp.function
+    if not isinstance(identifier, b1u3ast.Identifier):
+        return None, False
+
+    obj = None
+    try:
+        obj = env[identifier.value]
+    except KeyError:
+        return None, False
+    if not isinstance(obj, b1u3object.Macro):
+        return None, False
+    return obj, True
+
+
+def quote_args(exp):
+    args = []
+    for a in exp.arguments:
+        args.append(b1u3object.Quote(node=a))
+    return args
+
+def extend_macro_env(macro, args):
+    extended = b1u3object.new_enclosed_environment(macro.env)
+    for i, param in enumerate(macro.parameters):
+        extended[param.value] = args[i]
+    return extended
 

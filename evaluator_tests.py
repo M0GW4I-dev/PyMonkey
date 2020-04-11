@@ -280,4 +280,23 @@ class EvaluatorTest(unittest.TestCase):
         self.assertEqual(repr(obj.parameters[1]), 'y')
         self.assertEqual(repr(obj.body), '{ (x + y) }')
 
+    def test_expand_macros(self):
+        tests = [
+                ["let infixExpression = macro() { quote(1 + 2); };infixExpression();", "(1 + 2)"],
+                ["let reverse = macro(a, b) { quote(unquote(b) - unquote(a)); }; reverse(2 + 2, 10 - 5);", "(10 - 5) - (2 + 2)"]
+        ]
+        for tt in tests:
+            expected = self.help_test_parse_program(tt[1])
+            program = self.help_test_parse_program(tt[0])
+            env = b1u3object.Environment()
+            b1u3evaluator.define_macros(program, env)
+            expanded = b1u3evaluator.expand_macros(program, env)
+            self.assertEqual(repr(expanded), repr(expected), f'not equal want={repr(expected)}, got={repr(expanded)}')
+
+    def help_test_parse_program(self, s):
+        l = b1u3token.Lexer(s)
+        p = b1u3parser.Parser(l)
+        return p.parse_program()
+
+
 
